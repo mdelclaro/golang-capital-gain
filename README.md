@@ -2,13 +2,6 @@
 
 This project is a Golang-based application that calculates capital gains based on a series of stock operations (e.g., `BUY` and `SELL`). The application processes input data and outputs the calculated taxes for each operation.
 
-## Features
-
-- Handles `BUY` and `SELL` operations.
-- Calculates capital gains and taxes based on the provided operations.
-- Supports carry-forward losses for tax calculations.
-- Designed for extensibility and scalability.
-
 ## Requirements
 
 - Go 1.23 or later
