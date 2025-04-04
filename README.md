@@ -1,6 +1,6 @@
 # Golang Capital Gain Calculator
 
-This project is a Golang-based application that calculates capital gains based on a series of stock operations (e.g., `BUY` and `SELL`). The application processes input data and outputs the calculated taxes for each operation.
+This project is a Golang-based application that calculates capital gains based on a series of stock operations (e.g., `BUY` and `SELL`). The application processes input data and outputs the calculated taxes for each operation based on predetermined rules.
 
 ## Requirements
 
@@ -28,16 +28,7 @@ This project is a Golang-based application that calculates capital gains based o
 └── README.md            # Project documentation
 ```
 
-## Installation
-
-### Clone the Repository
-
-```bash
-git clone https://github.com/your-username/golang-capital-gain.git
-cd golang-capital-gain
-```
-
-### Install Dependencies
+## Install Dependencies
 
 ```bash
 make install
