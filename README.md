@@ -2,6 +2,8 @@
 
 This project is a Golang-based application that calculates capital gains based on a series of stock operations (e.g., `BUY` and `SELL`). The application processes input data and outputs the calculated taxes for each operation based on predetermined rules.
 
+The program receives lists of stock market operations in JSON format, one per line, through standard input (stdin). Each line represents an independent simulation, and the program does not maintain state between lines. For each line of input, the program returns a list containing the tax paid for each operation in JSON format.
+
 ## Requirements
 
 - Go 1.23 or later
