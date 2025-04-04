@@ -18,15 +18,28 @@ The program receives lists of stock market operations in JSON format, one per li
 ├── internal/
 │   ├── domain/
 │   │   ├── stocks/      # Logic for handling stock operations
+│   │   │   ├── service.go       # Core logic for stock operations
+│   │   │   └── service_test.go  # Unit tests for stock operations
 │   │   └── tax/         # Logic for tax calculations
+│   │       ├── service.go       # Core logic for tax calculations
+│   │       └── service_test.go  # Unit tests for tax calculations
 │   ├── pkg/
 │   │   └── models/      # Data models for operations and tax output
+│   │       ├── operations.go     # Model for stock operations
+│   │       └── tax.go    # Model for tax output
 │   └── utils/           # Utility functions
+│           └── math.go       # Helper functions for math operations
+│           └── math_test.go       # Unit tests
 ├── payloads/            # Input files for testing
+│   ├── case_1      # Example input for Use Case #1
+│   ├── case_2      # Example input for Use Case #2
+│   └── case_3      # Example input for Use Case #3
 ├── tests/
-│   └── integration_test.go # Integration tests
+│   ├── integration_test.go # Integration tests for the application
 ├── Dockerfile           # Dockerfile for containerized execution
+├── Makefile             # Makefile for automating common tasks
 ├── go.mod               # Go module file
+├── go.sum               # Go dependencies checksum file
 └── README.md            # Project documentation
 ```
 
@@ -67,3 +80,59 @@ make run case=payloads/case_x
 ```bash
 make test
 ```
+
+# Example Cases
+All examples are based on cases located inside [payloads](./payloads/).
+
+## Use Case #1
+| Operation | Unit Cost | Quantity | Tax Paid | Explanation                                                                 |
+|:----------|:----------|:---------|:---------|:----------------------------------------------------------------------------|
+| buy       | 10.00     | 100      | 0        | Buying stocks does not incur taxes                                          |
+| sell      | 15.00     | 50       | 0        | Total value is less than R$ 20,000                                          |
+| sell      | 15.00     | 50       | 0        | Total value is less than R$ 20,000                                          |
+
+Input:
+```json
+[{"operation":"buy", "unit-cost":10.00, "quantity": 100},
+{"operation":"sell", "unit-cost":15.00, "quantity": 50},
+{"operation":"sell", "unit-cost":15.00, "quantity": 50}]
+```
+Output:
+```json
+[{"tax": 0},{"tax": 0},{"tax": 0}]
+```
+
+## Use Case #2
+| Operation | Unit Cost | Quantity | Tax Paid | Explanation                                                                 |
+|:----------|:----------|:---------|:---------|:----------------------------------------------------------------------------|
+| buy       | 10.00     | 10000    | 0        | Buying stocks does not incur taxes                                          |
+| sell      | 20.00     | 5000     | 10000    | Profit of R$ 50,000: 20% of the profit corresponds to R$ 10,000, no prior loss |
+| sell      | 5.00      | 5000     | 0        | Loss of R$ 25,000: no taxes are paid                                       |
+
+Input:
+```json
+[{"operation":"buy", "unit-cost":10.00, "quantity": 10000},
+{"operation":"sell", "unit-cost":20.00, "quantity": 5000},
+{"operation":"sell", "unit-cost":5.00, "quantity": 5000}]
+
+Output:
+```json
+[{"tax": 0.0},{"tax": 10000.0},{"tax": 0.0}]
+```
+
+## Use Case #3
+| Operation | Unit Cost | Quantity | Tax Paid | Explanation                                                                 |
+|:----------|:----------|:---------|:---------|:----------------------------------------------------------------------------|
+| buy       | 10.00     | 10000    | 0        | Buying stocks does not incur taxes                                          |
+| sell      | 5.00      | 5000     | 0        | Loss of R$ 25,000: no taxes are paid                                       |
+| sell      | 20.00     | 3000     | 1000     | Profit of R$ 30,000: Deduct loss of R$ 25,000 and pay 20% of R$ 5,000 in taxes (R$ 1,000) |
+
+Input:
+```json
+[{"operation":"buy", "unit-cost":10.00, "quantity": 10000},
+{"operation":"sell", "unit-cost":5.00, "quantity": 5000},
+{"operation":"sell", "unit-cost":20.00, "quantity": 3000}]
+```
+Output:
+```json
+[{"tax": 0.0},{"tax": 0.0},{"tax": 1000.0}]
