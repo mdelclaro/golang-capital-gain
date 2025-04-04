@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"os"
 
-	"golang-capital-gain/internal/domain/stocks"
 	"golang-capital-gain/internal/domain/tax"
 	"golang-capital-gain/internal/pkg/models"
 )
@@ -14,15 +13,14 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for scanner.Scan() {
-		stocksService := stocks.NewStocksService()
-		taxService := tax.NewTaxService(stocksService)
+		taxService := tax.NewTaxService()
 
 		data := []models.Operation{}
 
 		json.Unmarshal([]byte(scanner.Text()), &data)
 
-		capitalGainOutputs := taxService.CalculateTax(data)
+		taxes := taxService.CalculateTax(data)
 
-		json.NewEncoder(os.Stdout).Encode(capitalGainOutputs)
+		json.NewEncoder(os.Stdout).Encode(taxes)
 	}
 }

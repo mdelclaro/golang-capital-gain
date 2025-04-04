@@ -14,8 +14,8 @@ type StocksService struct {
 
 func NewStocksService() *StocksService {
 	return &StocksService{
-		AveragePrice: 0,
-		Shares:       0,
+		AveragePrice: utils.ZERO_VALUE,
+		Shares:       utils.ZERO_VALUE,
 	}
 }
 
@@ -39,12 +39,12 @@ func (s *StocksService) Sell(operation models.Operation) (float64, float64) {
 	diff := utils.ApplyPrecision(currentCost-operationCost, 2)
 
 	if operation.UnitCost == s.AveragePrice {
-		return 0, 0
+		return utils.ZERO_VALUE, utils.ZERO_VALUE
 	}
 
 	if operation.UnitCost < s.AveragePrice {
-		return 0, diff
+		return utils.ZERO_VALUE, diff
 	}
 
-	return math.Abs(diff), 0
+	return math.Abs(diff), utils.ZERO_VALUE
 }

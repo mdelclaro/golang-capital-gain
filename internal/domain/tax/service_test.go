@@ -5,7 +5,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"golang-capital-gain/internal/domain/stocks"
 	"golang-capital-gain/internal/domain/tax"
 	"golang-capital-gain/internal/pkg/models"
 )
@@ -64,8 +63,7 @@ func TestCalculateTax(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			stocksService := stocks.NewStocksService()
-			taxService := tax.NewTaxService(stocksService)
+			taxService := tax.NewTaxService()
 
 			result := taxService.CalculateTax(tt.operations)
 

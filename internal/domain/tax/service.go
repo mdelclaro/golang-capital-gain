@@ -8,18 +8,20 @@ import (
 	"golang-capital-gain/internal/utils"
 )
 
+const TAX_PERCENT = float64(0.2)
+
 type TaxService struct {
 	Losses float64
 }
 
-func NewTaxService(stocksService *stocks.StocksService) *TaxService {
+func NewTaxService() *TaxService {
 	return &TaxService{
-		Losses: 0,
+		Losses: utils.ZERO_VALUE,
 	}
 }
 
 func (s *TaxService) CalculateTax(operations []models.Operation) []models.TaxOutput {
-	var tax []models.TaxOutput
+	var taxes []models.TaxOutput
 
 	stocksService := stocks.NewStocksService()
 
@@ -27,36 +29,36 @@ func (s *TaxService) CalculateTax(operations []models.Operation) []models.TaxOut
 		switch operation.Operation {
 		case models.BUY:
 			stocksService.Buy(operation)
-			tax = append(tax, buildTax(0))
+			taxes = append(taxes, buildTax(utils.ZERO_VALUE))
 
 		case models.SELL:
-			taxValue := 0.0
+			taxValue := utils.ZERO_VALUE
 			gain, loss := stocksService.Sell(operation)
 			gain = s.deductLoss(gain, loss)
 
-			if gain > 0 {
+			if gain > utils.ZERO_VALUE {
 				taxValue = getTaxValue(gain, operation)
 			}
 
-			tax = append(tax, buildTax(taxValue))
+			taxes = append(taxes, buildTax(taxValue))
 		}
 	}
 
-	return tax
+	return taxes
 }
 
 func (s *TaxService) deductLoss(gain, loss float64) float64 {
 	currLoss := s.Losses
 
-	if loss > 0 {
+	if loss > utils.ZERO_VALUE {
 		s.Losses += loss
 	}
 
-	if gain > 0 {
+	if gain > utils.ZERO_VALUE {
 		s.Losses -= gain
 
-		if s.Losses < 0 {
-			s.Losses = 0
+		if s.Losses < utils.ZERO_VALUE {
+			s.Losses = utils.ZERO_VALUE
 		}
 	}
 
@@ -71,8 +73,8 @@ func buildTax(value float64) models.TaxOutput {
 
 func getTaxValue(currGain float64, operation models.Operation) float64 {
 	if float64(operation.Quantity)*(operation.UnitCost) <= 20000 {
-		return 0
+		return utils.ZERO_VALUE
 	}
 
-	return math.Abs(utils.ApplyPrecision(currGain*0.2, 2))
+	return math.Abs(utils.ApplyPrecision(currGain*TAX_PERCENT, 2))
 }
