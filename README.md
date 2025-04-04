@@ -114,7 +114,7 @@ Input:
 [{"operation":"buy", "unit-cost":10.00, "quantity": 10000},
 {"operation":"sell", "unit-cost":20.00, "quantity": 5000},
 {"operation":"sell", "unit-cost":5.00, "quantity": 5000}]
-
+```
 Output:
 ```json
 [{"tax": 0.0},{"tax": 10000.0},{"tax": 0.0}]
@@ -136,3 +136,4 @@ Input:
 Output:
 ```json
 [{"tax": 0.0},{"tax": 0.0},{"tax": 1000.0}]
+```
